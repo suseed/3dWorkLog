@@ -11,178 +11,154 @@
       --bg-light: #ffffff;
       --surface: #f9f9f9;
       --text-main: #222222;
-      --neon-blue: #005f7a;   /* 낮은 명도의 시안 */
-      --neon-red:  #8a0054;   /* 낮은 명도의 마젠타 */
-      --neon-pink: #6a00a5;   /* 제목용 보라핑크 */
+      --neon-blue: #005f7a;  /* 낮은 시안 */
+      --neon-red:  #8a0054;  /* 낮은 마젠타 */
+      --neon-pink: #6a00a5;  /* 제목용 */
     }
-    html, body {
-      background-color: var(--bg-light);
-      color: var(--text-main);
-      font-family: 'Rajdhani', sans-serif;
-      letter-spacing: 0.4px;
-    }
-    h1 {
-      color: #fff;
-      padding: 6px 18px;
-      display: inline-block;
-      background-color: var(--neon-pink);
-      border-radius: 10px;
-      text-shadow: 0 0 4px var(--neon-pink);
-    }
-    .neon-box {
-      background: var(--surface);
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 0 4px rgba(0,0,0,0.05);
-    }
-    .form-label {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 6px;
-      background-color: var(--neon-blue);
-      color: #ffffff;
-      font-weight: 600;
-      text-shadow: 0 0 3px var(--neon-blue);
-    }
-    .form-control, textarea {
-      background-color: #fff;
-      border: 1px solid #ccc;
-      color: var(--text-main);
-    }
-    .form-control:focus {
-      border-color: var(--neon-blue);
-      box-shadow: 0 0 3px var(--neon-blue);
-    }
-    .btn-neon {
-      color: #ffffff;
-      border: none;
-      font-weight: 600;
-      transition: box-shadow 0.25s ease, transform 0.25s ease;
-      background-color: var(--neon-blue);
-    }
-    .btn-neon:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 6px var(--neon-blue);
-    }
-    .btn-red { background-color: var(--neon-red); }
-
-    .table { background-color: #fff; }
-    .table thead th {
-      background-color: var(--neon-blue);
-      color: #ffffff;
-      text-shadow: 0 0 2px var(--neon-blue);
-    }
-    .table a { color: var(--neon-red); }
-    .table-actions .btn { padding: 0.25rem 0.6rem; }
+    html,body{background:var(--bg-light);color:var(--text-main);font-family:'Rajdhani',sans-serif;letter-spacing:0.4px}
+    h1{color:#fff;padding:6px 18px;display:inline-block;background:var(--neon-pink);border-radius:10px;text-shadow:0 0 4px var(--neon-pink)}
+    .neon-box{background:var(--surface);border-radius:12px;padding:2rem;box-shadow:0 0 4px rgba(0,0,0,0.05)}
+    .form-label{display:inline-block;padding:2px 8px;border-radius:6px;background:var(--neon-blue);color:#fff;font-weight:600;text-shadow:0 0 3px var(--neon-blue)}
+    .form-control,textarea{background:#fff;border:1px solid #ccc;color:var(--text-main)}
+    .form-control:focus{border-color:var(--neon-blue);box-shadow:0 0 3px var(--neon-blue)}
+    .btn-neon{color:#fff;border:none;font-weight:600;background:var(--neon-blue);transition:box-shadow .25s,transform .25s}
+    .btn-neon:hover{transform:translateY(-2px);box-shadow:0 0 6px currentColor}
+    .btn-red{background:var(--neon-red)}
+    .table{background:#fff}
+    .table thead th{background:var(--neon-blue);color:#fff;text-shadow:0 0 2px var(--neon-blue)}
+    .table a{color:var(--neon-red)}
+    .table-actions .btn{padding:0.25rem 0.6rem}
   </style>
 </head>
 <body>
-  <div class="container my-5 neon-box">
-    <h1 class="mb-4 text-center w-100">3D 작업 로그</h1>
+<div class="container my-5 neon-box">
+  <h1 class="mb-4 text-center w-100">3D 작업 로그</h1>
 
-    <!-- 입력 폼 -->
-    <form id="taskForm" class="row g-3 align-items-end mb-4">
-      <div class="col-md-3">
-        <label for="projectName" class="form-label">프로젝트 명</label>
-        <input type="text" class="form-control" id="projectName" placeholder="프로젝트" required />
-      </div>
-      <div class="col-md-3">
-        <label for="memberName" class="form-label">팀 멤버</label>
-        <input type="text" class="form-control" id="memberName" placeholder="이름" required />
-      </div>
-      <div class="col-md-3">
-        <label for="fileLink" class="form-label">N드라이브 링크</label>
-        <input type="url" class="form-control" id="fileLink" placeholder="https://..." required />
-      </div>
-      <div class="col-md-3">
-        <label for="taskDate" class="form-label">작업 일자</label>
-        <input type="date" class="form-control" id="taskDate" required />
-      </div>
-      <div class="col-md-12">
-        <label for="description" class="form-label">내용</label>
-        <textarea class="form-control" id="description" rows="2" placeholder="작업 상세 설명" required></textarea>
-      </div>
-      <input type="hidden" id="editIndex" value="" />
-      <div class="col-auto">
-        <button type="submit" class="btn btn-neon" id="submitBtn">추가</button>
-      </div>
-    </form>
-
-    <!-- 작업 테이블 -->
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead><tr><th>프로젝트</th><th>팀 멤버</th><th>N드라이브</th><th>내용</th><th>작업 일자</th><th class="text-center">액션</th></tr></thead>
-        <tbody id="taskTableBody"></tbody>
-      </table>
+  <!-- 입력 폼 -->
+  <form id="taskForm" class="row g-3 align-items-end mb-4">
+    <div class="col-md-3">
+      <label for="projectName" class="form-label">프로젝트 명</label>
+      <input type="text" id="projectName" class="form-control" placeholder="프로젝트" required>
     </div>
+    <div class="col-md-3">
+      <label for="memberName" class="form-label">팀 멤버</label>
+      <input type="text" id="memberName" class="form-control" placeholder="이름" required>
+    </div>
+    <div class="col-md-3">
+      <label for="fileLink" class="form-label">N드라이브 링크</label>
+      <input type="url" id="fileLink" class="form-control" placeholder="https://..." required>
+    </div>
+    <div class="col-md-3">
+      <label for="taskDate" class="form-label">작업 일자</label>
+      <input type="date" id="taskDate" class="form-control" required>
+    </div>
+    <div class="col-md-12">
+      <label for="description" class="form-label">내용</label>
+      <textarea id="description" rows="2" class="form-control" placeholder="작업 상세 설명" required></textarea>
+    </div>
+    <input type="hidden" id="editIndex">
+    <div class="col-auto">
+      <button type="submit" id="submitBtn" class="btn btn-neon">추가</button>
+    </div>
+  </form>
+
+  <!-- 테이블 -->
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr><th>프로젝트</th><th>팀 멤버</th><th>N드라이브</th><th>내용</th><th>작업 일자</th><th class="text-center">액션</th></tr>
+      </thead>
+      <tbody id="taskTableBody"></tbody>
+    </table>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      let tasks = [];
-      const form = document.getElementById('taskForm');
+  <!-- 제어 버튼 -->
+  <div class="d-flex flex-wrap gap-2 mt-3">
+    <button id="downloadJsonBtn" class="btn btn-neon">JSON 저장</button>
+    <label for="uploadJson" class="btn btn-neon btn-red mb-0">JSON 업로드</label>
+    <input type="file" id="uploadJson" accept="application/json" hidden>
+    <button id="printBtn" class="btn btn-neon">인쇄</button>
+    <button id="pdfBtn" class="btn btn-neon">PDF 저장</button>
+  </div>
+</div>
 
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const project = document.getElementById('projectName').value.trim();
-        const member  = document.getElementById('memberName').value.trim();
-        const link    = document.getElementById('fileLink').value.trim();
-        const date    = document.getElementById('taskDate').value;
-        const desc    = document.getElementById('description').value.trim();
-        const idx     = document.getElementById('editIndex').value;
-        const taskObj = { project, member, link, date, desc };
-        if (idx === '') {
-          tasks.push(taskObj);
-        } else {
-          tasks[idx] = taskObj;
-        }
-        renderTable();
-        resetForm();
-      });
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let tasks = [];
+    const form = document.getElementById('taskForm');
 
-      function renderTable() {
-        const tbody = document.getElementById('taskTableBody');
-        tbody.innerHTML = '';
-        tasks.forEach((task, index) => {
-          tbody.insertAdjacentHTML('beforeend',
-            `<tr>
-              <td>${task.project}</td>
-              <td>${task.member}</td>
-              <td><a href="${task.link}" target="_blank">링크 열기</a></td>
-              <td>${task.desc}</td>
-              <td>${task.date}</td>
-              <td class="table-actions text-center">
-                <button class="btn btn-sm btn-neon" onclick="editTask(${index})">수정</button>
-                <button class="btn btn-sm btn-neon btn-red" onclick="deleteTask(${index})">삭제</button>
-              </td>
-            </tr>`);
-        });
-      }
-
-      function resetForm() {
-        form.reset();
-        document.getElementById('editIndex').value = '';
-        document.getElementById('submitBtn').textContent = '추가';
-      }
-
-      window.editTask = (i) => {
-        const t = tasks[i];
-        document.getElementById('projectName').value = t.project;
-        document.getElementById('memberName').value  = t.member;
-        document.getElementById('fileLink').value    = t.link;
-        document.getElementById('taskDate').value    = t.date;
-        document.getElementById('description').value = t.desc;
-        document.getElementById('editIndex').value   = i;
-        document.getElementById('submitBtn').textContent = '수정 완료';
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const task = {
+        project: projectName.value.trim(),
+        member:  memberName.value.trim(),
+        link:    fileLink.value.trim(),
+        date:    taskDate.value,
+        desc:    description.value.trim()
       };
-
-      window.deleteTask = (i) => {
-        if (confirm('이 항목을 삭제하시겠습니까?')) {
-          tasks.splice(i, 1);
-          renderTable();
-        }
-      };
+      const idx = editIndex.value;
+      if(idx === '') tasks.push(task); else tasks[idx] = task;
+      render();
+      form.reset();
+      editIndex.value = '';
+      submitBtn.textContent = '추가';
     });
-  </script>
+
+    window.editTask = i => {
+      const t = tasks[i];
+      projectName.value = t.project;
+      memberName.value  = t.member;
+      fileLink.value    = t.link;
+      taskDate.value    = t.date;
+      description.value = t.desc;
+      editIndex.value   = i;
+      submitBtn.textContent = '수정 완료';
+    };
+    window.deleteTask = i => { if(confirm('삭제하시겠습니까?')){ tasks.splice(i,1); render(); }};
+
+    function render(){
+      const tbody = taskTableBody; tbody.innerHTML='';
+      tasks.forEach((t,i)=>{
+        tbody.insertAdjacentHTML('beforeend',`
+          <tr>
+            <td>${t.project}</td>
+            <td>${t.member}</td>
+            <td><a href="${t.link}" target="_blank">링크 열기</a></td>
+            <td>${t.desc}</td>
+            <td>${t.date}</td>
+            <td class="table-actions text-center">
+              <button class="btn btn-sm btn-neon" onclick="editTask(${i})">수정</button>
+              <button class="btn btn-sm btn-neon btn-red" onclick="deleteTask(${i})">삭제</button>
+            </td>
+          </tr>`);
+      });
+    }
+
+    /* ---------- JSON 저장 & 불러오기 ---------- */
+    downloadJsonBtn.addEventListener('click',()=>{
+      const blob = new Blob([JSON.stringify(tasks,null,2)],{type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'tasks.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    uploadJson.addEventListener('change',e=>{
+      const file = e.target.files[0]; if(!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => { try{
+        const arr = JSON.parse(evt.target.result);
+        if(Array.isArray(arr)){ tasks = arr; render(); } else throw '형식 오류';
+      }catch(err){ alert('JSON 읽기 오류'); } };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    /* ---------- 인쇄 & PDF ---------- */
+    const printHandler = ()=> window.print();
+    printBtn.addEventListener('click',printHandler);
+    pdfBtn.addEventListener('click',printHandler); // 브라우저 인쇄 대화상자 PDF 저장 이용
+  });
+</script>
 </body>
 </html>
