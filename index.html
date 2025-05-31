@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Neon 3D 작업 로그</title>
+  <title>간단 3D 작업 로그</title>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
@@ -11,10 +11,9 @@
       --bg-light: #ffffff;
       --surface: #f9f9f9;
       --text-main: #222222;
-      /* ▼ 네온 색상, 명도 낮춘 버전 */
-      --neon-blue: #005f7a;   /* 어두운 시안 */
-      --neon-red:  #8a0054;   /* 어두운 마젠타 */
-      --neon-pink: #6a00a5;   /* 어두운 보라핑크 */
+      --neon-blue: #005f7a;   /* 낮은 명도의 시안 */
+      --neon-red:  #8a0054;   /* 낮은 명도의 마젠타 */
+      --neon-pink: #6a00a5;   /* 제목용 보라핑크 */
     }
     html, body {
       background-color: var(--bg-light);
@@ -22,7 +21,6 @@
       font-family: 'Rajdhani', sans-serif;
       letter-spacing: 0.4px;
     }
-    /* ---------------- 제목 ---------------- */
     h1 {
       color: #fff;
       padding: 6px 18px;
@@ -37,7 +35,6 @@
       padding: 2rem;
       box-shadow: 0 0 4px rgba(0,0,0,0.05);
     }
-    /* ---------------- LABELS ---------------- */
     .form-label {
       display: inline-block;
       padding: 2px 8px;
@@ -47,7 +44,6 @@
       font-weight: 600;
       text-shadow: 0 0 3px var(--neon-blue);
     }
-    /* ---------------- INPUTS ---------------- */
     .form-control, textarea {
       background-color: #fff;
       border: 1px solid #ccc;
@@ -57,24 +53,19 @@
       border-color: var(--neon-blue);
       box-shadow: 0 0 3px var(--neon-blue);
     }
-    /* ---------------- BUTTONS ---------------- */
     .btn-neon {
       color: #ffffff;
       border: none;
       font-weight: 600;
       transition: box-shadow 0.25s ease, transform 0.25s ease;
+      background-color: var(--neon-blue);
     }
     .btn-neon:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 6px currentColor;
+      box-shadow: 0 0 6px var(--neon-blue);
     }
-    .btn-blue  { background-color: var(--neon-blue); }
-    .btn-red   { background-color: var(--neon-red);  }
+    .btn-red { background-color: var(--neon-red); }
 
-    .table-actions .btn-blue { background-color: var(--neon-blue); }
-    .table-actions .btn-red  { background-color: var(--neon-red);  }
-
-    /* ---------------- TABLE ---------------- */
     .table { background-color: #fff; }
     .table thead th {
       background-color: var(--neon-blue);
@@ -89,6 +80,7 @@
   <div class="container my-5 neon-box">
     <h1 class="mb-4 text-center w-100">3D 작업 로그</h1>
 
+    <!-- 입력 폼 -->
     <form id="taskForm" class="row g-3 align-items-end mb-4">
       <div class="col-md-3">
         <label for="projectName" class="form-label">프로젝트 명</label>
@@ -112,87 +104,85 @@
       </div>
       <input type="hidden" id="editIndex" value="" />
       <div class="col-auto">
-        <button type="submit" class="btn btn-neon btn-blue" id="submitBtn">추가</button>
+        <button type="submit" class="btn btn-neon" id="submitBtn">추가</button>
       </div>
     </form>
 
+    <!-- 작업 테이블 -->
     <div class="table-responsive">
       <table class="table table-hover">
         <thead><tr><th>프로젝트</th><th>팀 멤버</th><th>N드라이브</th><th>내용</th><th>작업 일자</th><th class="text-center">액션</th></tr></thead>
         <tbody id="taskTableBody"></tbody>
       </table>
     </div>
-
-    <div class="d-flex flex-wrap gap-2 mt-4">
-      <button class="btn btn-neon btn-blue" id="downloadJsonBtn">JSON 저장</button>
-      <label class="btn btn-neon btn-red mb-0" for="uploadJson">JSON 업로드</label>
-      <input type="file" id="uploadJson" accept="application/json" hidden />
-      <button class="btn btn-neon btn-blue" id="saveLocalBtn">브라우저에 저장</button>
-      <button class="btn btn-neon btn-red" id="clearLocalBtn">저장 데이터 초기화</button>
-    </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    let tasks = [];
-    const form = document.getElementById('taskForm');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const project = document.getElementById('projectName').value.trim();
-      const member  = document.getElementById('memberName').value.trim();
-      const link    = document.getElementById('fileLink').value.trim();
-      const date    = document.getElementById('taskDate').value;
-      const desc    = document.getElementById('description').value.trim();
-      const idx     = document.getElementById('editIndex').value;
-      const taskObj = { project, member, link, date, desc };
-      if (idx === '') tasks.push(taskObj); else tasks[idx] = taskObj;
-      renderTable(); resetForm(); saveToLocal();
-    });
+    document.addEventListener('DOMContentLoaded', () => {
+      let tasks = [];
+      const form = document.getElementById('taskForm');
 
-    function renderTable() {
-      const tbody = document.getElementById('taskTableBody');
-      tbody.innerHTML = '';
-      tasks.forEach((task, index) => {
-        tbody.insertAdjacentHTML('beforeend',
-          `<tr><td>${task.project}</td><td>${task.member}</td><td><a href="${task.link}" target="_blank">링크 열기</a></td><td>${task.desc}</td><td>${task.date}</td><td class="table-actions text-center"><button class="btn btn-sm btn-neon btn-blue" onclick="editTask(${index})">수정</button><button class="btn btn-sm btn-neon btn-red" onclick="deleteTask(${index})">삭제</button></td></tr>`);
-      });
-    }
-
-    function resetForm() {
-      form.reset();
-      document.getElementById('editIndex').value = '';
-      document.getElementById('submitBtn').textContent = '추가';
-    }
-
-    window.editTask = (i) => {
-      const t = tasks[i];
-      document.getElementById('projectName').value = t.project;
-      document.getElementById('memberName').value  = t.member;
-      document.getElementById('fileLink').value   = t.link;
-      document.getElementById('taskDate').value   = t.date;
-      document.getElementById('description').value= t.desc;
-      document.getElementById('editIndex').value  = i;
-      document.getElementById('submitBtn').textContent = '수정 완료';
-    };
-
-    window.deleteTask = (i) => {
-      if (confirm('이 항목을 삭제하시겠습니까?')) {
-        tasks.splice(i, 1);
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const project = document.getElementById('projectName').value.trim();
+        const member  = document.getElementById('memberName').value.trim();
+        const link    = document.getElementById('fileLink').value.trim();
+        const date    = document.getElementById('taskDate').value;
+        const desc    = document.getElementById('description').value.trim();
+        const idx     = document.getElementById('editIndex').value;
+        const taskObj = { project, member, link, date, desc };
+        if (idx === '') {
+          tasks.push(taskObj);
+        } else {
+          tasks[idx] = taskObj;
+        }
         renderTable();
-        saveToLocal();
+        resetForm();
+      });
+
+      function renderTable() {
+        const tbody = document.getElementById('taskTableBody');
+        tbody.innerHTML = '';
+        tasks.forEach((task, index) => {
+          tbody.insertAdjacentHTML('beforeend',
+            `<tr>
+              <td>${task.project}</td>
+              <td>${task.member}</td>
+              <td><a href="${task.link}" target="_blank">링크 열기</a></td>
+              <td>${task.desc}</td>
+              <td>${task.date}</td>
+              <td class="table-actions text-center">
+                <button class="btn btn-sm btn-neon" onclick="editTask(${index})">수정</button>
+                <button class="btn btn-sm btn-neon btn-red" onclick="deleteTask(${index})">삭제</button>
+              </td>
+            </tr>`);
+        });
       }
-    };
 
-    document.getElementById('downloadJsonBtn').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(tasks, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'tasks.json';
-      a.click();
-      URL.revokeObjectURL(url);
+      function resetForm() {
+        form.reset();
+        document.getElementById('editIndex').value = '';
+        document.getElementById('submitBtn').textContent = '추가';
+      }
+
+      window.editTask = (i) => {
+        const t = tasks[i];
+        document.getElementById('projectName').value = t.project;
+        document.getElementById('memberName').value  = t.member;
+        document.getElementById('fileLink').value    = t.link;
+        document.getElementById('taskDate').value    = t.date;
+        document.getElementById('description').value = t.desc;
+        document.getElementById('editIndex').value   = i;
+        document.getElementById('submitBtn').textContent = '수정 완료';
+      };
+
+      window.deleteTask = (i) => {
+        if (confirm('이 항목을 삭제하시겠습니까?')) {
+          tasks.splice(i, 1);
+          renderTable();
+        }
+      };
     });
-
-    document.getElementById('uploadJson').addEventListener('change', (e) => {
-      const f = e.target.files[0];
-      if (!
+  </script>
+</body>
+</html>
